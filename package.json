@@ -1,0 +1,80 @@
+{
+  "name": "minify-html-literals",
+  "version": "0.0.0",
+  "description": "Minify HTML template literal strings",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "author": "Liz Mitchell <asyncliz@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "minify",
+    "html",
+    "literal",
+    "literals",
+    "template",
+    "tagged",
+    "lit-html"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asyncLiz/minify-html-literals.git"
+  },
+  "scripts": {
+    "clean": "rimraf \"src/**/*.{js*,d.ts}\" && rimraf \"index.{js*,d.ts}\" && rimraf \"{.nyc_output/,coverage/}\"",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "pretest": "npm run clean",
+    "test": "nyc mocha -r ts-node/register -r source-map-support/register test/*.ts",
+    "lint": "prettier --write \"*.{js,ts,json,md}\" \"{src,test}/**/*\"",
+    "precommit": "lint-staged",
+    "release": "standard-version",
+    "prepublishOnly": "npm run build"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "index.ts",
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "html",
+      "text-summary"
+    ],
+    "all": true
+  },
+  "dependencies": {
+    "html-minifier": "^3.5.19",
+    "magic-string": "^0.25.0",
+    "parse-literals": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/html-minifier": "^3.5.2",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.5.2",
+    "@types/sinon": "^5.0.1",
+    "chai": "^4.1.2",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "prettier": "^1.13.7",
+    "rimraf": "^2.6.2",
+    "sinon": "^6.1.4",
+    "source-map-support": "^0.5.6",
+    "standard-version": "^4.4.0",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  }
+}
