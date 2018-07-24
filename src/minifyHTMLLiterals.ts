@@ -27,16 +27,16 @@ export interface DefaultOptions extends BaseOptions {
 /**
  * Options for <code>minifyHTMLLiterals()</code>, using a custom strategy.
  */
-export interface CustomOptions<O> extends BaseOptions {
+export interface CustomOptions<S extends Strategy> extends BaseOptions {
   /**
    * HTML minification options.
    */
-  minifyOptions?: O;
+  minifyOptions?: S extends Strategy<infer O> ? O : never;
   /**
    * Override the default strategy for how to minify HTML. The default is to
    * use <code>html-minifier</code>.
    */
-  strategy: Strategy<O>;
+  strategy: S;
 }
 
 /**
@@ -216,9 +216,9 @@ export const defaultValidation: Validation = {
  * @param options minification options
  * @returns the minified code, or null if no minification occurred.
  */
-export function minifyHTMLLiterals<O>(
+export function minifyHTMLLiterals(
   source: string,
-  options: CustomOptions<O>
+  options: DefaultOptions
 ): Result | null;
 /**
  * Minifies all HTML template literals in the provided source string.
@@ -227,9 +227,9 @@ export function minifyHTMLLiterals<O>(
  * @param options minification options
  * @returns the minified code, or null if no minification occurred.
  */
-export function minifyHTMLLiterals(
+export function minifyHTMLLiterals<S extends Strategy>(
   source: string,
-  options: DefaultOptions
+  options: CustomOptions<S>
 ): Result | null;
 export function minifyHTMLLiterals(
   source: string,
