@@ -25,6 +25,7 @@
     "build": "tsc",
     "pretest": "npm run clean",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register test/*.ts",
+    "coveralls": "cat coverage/lcov.info | coveralls",
     "lint": "prettier --write \"*.{js,ts,json,md}\" \"{src,test}/**/*\"",
     "precommit": "lint-staged",
     "release": "standard-version",
@@ -49,6 +50,7 @@
     ],
     "reporter": [
       "html",
+      "lcovonly",
       "text-summary"
     ],
     "all": true
@@ -65,6 +67,7 @@
     "@types/node": "^10.5.2",
     "@types/sinon": "^5.0.1",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.2",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.0",
     "mocha": "^5.2.0",

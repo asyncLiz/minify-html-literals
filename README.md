@@ -2,6 +2,10 @@
 
 _Minify HTML markup inside JavaScript template literal strings._
 
+[![npm](https://img.shields.io/npm/v/minify-html-literals.svg)](https://www.npmjs.com/package/minify-html-literals)
+[![Build Status](https://travis-ci.com/asyncLiz/minify-html-literals.svg?branch=master)](https://travis-ci.com/asyncLiz/minify-html-literals)
+[![Coverage Status](https://coveralls.io/repos/github/asyncLiz/minify-html-literals/badge.svg?branch=master)](https://coveralls.io/github/asyncLiz/minify-html-literals?branch=master)
+
 ## Why?
 
 Template literals are often used in JavaScript to write HTML and CSS markup (ex. [lit-html](https://www.npmjs.com/package/lit-html)). This library allows a developer to minify markup that is normally ignored by JavaScript minifiers.
