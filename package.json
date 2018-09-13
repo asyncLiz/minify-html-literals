@@ -1,6 +1,6 @@
 {
   "name": "minify-html-literals",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Minify HTML template literal strings",
   "main": "index.js",
   "types": "index.d.ts",
