@@ -14,11 +14,7 @@ import {
   defaultValidation,
   minifyHTMLLiterals
 } from '../src/minifyHTMLLiterals';
-import {
-  Strategy,
-  defaultMinifyOptions,
-  defaultStrategy
-} from '../src/strategy';
+import { defaultMinifyOptions, defaultStrategy } from '../src/strategy';
 
 class MagicStringLike {
   generateMap(options?: Partial<SourceMapOptions>): SourceMap {
@@ -38,7 +34,7 @@ class MagicStringLike {
     };
   }
 
-  overwrite(start: number, end: number, content: string): any {
+  overwrite(_start: number, _end: number, _content: string): any {
     // noop
   }
 
@@ -161,7 +157,7 @@ describe('minifyHTMLLiterals()', () => {
       let msUsed;
       minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
-        generateSourceMap(ms, fileName) {
+        generateSourceMap(ms) {
           msUsed = ms;
           return undefined;
         }
@@ -175,7 +171,7 @@ describe('minifyHTMLLiterals()', () => {
       minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         MagicString: MagicStringLike,
-        generateSourceMap(ms, fileName) {
+        generateSourceMap(ms) {
           msUsed = ms;
           return undefined;
         }
@@ -243,7 +239,7 @@ describe('minifyHTMLLiterals()', () => {
         minifyHTMLLiterals(SOURCE, {
           fileName: 'test.js',
           strategy: {
-            getPlaceholder: (parts: TemplatePart[]) => {
+            getPlaceholder: () => {
               return ''; // cause an error
             },
             combineHTMLStrings: defaultStrategy.combineHTMLStrings,
@@ -333,7 +329,7 @@ describe('minifyHTMLLiterals()', () => {
     it('should call generateMap() on MagicStringLike with .map file and source name', () => {
       const ms = new MagicStringLike();
       const generateMapSpy = spy(ms, 'generateMap');
-      const result = defaultGenerateSourceMap(ms, 'test.js');
+      defaultGenerateSourceMap(ms, 'test.js');
       expect(
         generateMapSpy.calledWith({ file: 'test.js.map', source: 'test.js' })
       ).to.be.true;
