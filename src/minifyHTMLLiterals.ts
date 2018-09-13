@@ -1,4 +1,4 @@
-import MagicString, { DecodedSourceMap, SourceMapOptions } from 'magic-string';
+import MagicString, { SourceMapOptions } from 'magic-string';
 import {
   Template,
   TemplatePart,

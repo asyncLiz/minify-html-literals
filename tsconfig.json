@@ -3,6 +3,8 @@
     "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "sourceMap": true,
     "strict": true,
     "target": "esnext"
