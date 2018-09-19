@@ -175,7 +175,8 @@ export function defaultGenerateSourceMap(
 ): SourceMap {
   return ms.generateMap({
     file: `${fileName}.map`,
-    source: fileName
+    source: fileName,
+    hires: true
   });
 }
 
