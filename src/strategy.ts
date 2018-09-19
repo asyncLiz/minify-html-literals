@@ -65,9 +65,6 @@ export const defaultMinifyOptions: Options = {
   removeScriptTypeAttributes: true,
   removeStyleLinkTypeAttributes: true,
   removeTagWhitespace: true,
-  sortAttributes: true,
-  sortClassName: true,
-  trimCustomFragments: true,
   useShortDoctype: true
 };
 
