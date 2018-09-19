@@ -326,12 +326,16 @@ describe('minifyHTMLLiterals()', () => {
   });
 
   describe('defaultGenerateSourceMap()', () => {
-    it('should call generateMap() on MagicStringLike with .map file and source name', () => {
+    it('should call generateMap() on MagicStringLike with .map file, source name, and hires', () => {
       const ms = new MagicStringLike();
       const generateMapSpy = spy(ms, 'generateMap');
       defaultGenerateSourceMap(ms, 'test.js');
       expect(
-        generateMapSpy.calledWith({ file: 'test.js.map', source: 'test.js' })
+        generateMapSpy.calledWith({
+          file: 'test.js.map',
+          source: 'test.js',
+          hires: true
+        })
       ).to.be.true;
     });
   });
