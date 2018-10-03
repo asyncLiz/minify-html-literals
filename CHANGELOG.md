@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.6"></a>
+
+## [1.0.6](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.5...v1.0.6) (2018-10-03)
+
+### Bug Fixes
+
+- do not collapse boolean attributes for Polymer binding syntax ([80df154](https://github.com/asyncLiz/minify-html-literals/commit/80df154))
+
 <a name="1.0.5"></a>
 
 ## [1.0.5](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.4...v1.0.5) (2018-09-27)
