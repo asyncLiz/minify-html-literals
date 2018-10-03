@@ -53,7 +53,6 @@ export interface Strategy<O = any> {
  */
 export const defaultMinifyOptions: Options = {
   caseSensitive: true,
-  collapseBooleanAttributes: true,
   collapseWhitespace: true,
   decodeEntities: true,
   minifyCSS: true,
