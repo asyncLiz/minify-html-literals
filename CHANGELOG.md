@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.7"></a>
+
+## [1.0.7](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.6...v1.0.7) (2018-10-05)
+
+### Bug Fixes
+
+- do not remove tag whitespace ([89f362a](https://github.com/asyncLiz/minify-html-literals/commit/89f362a))
+
 <a name="1.0.6"></a>
 
 ## [1.0.6](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.5...v1.0.6) (2018-10-03)
