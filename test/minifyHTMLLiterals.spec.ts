@@ -141,7 +141,7 @@ describe('minifyHTMLLiterals()', () => {
       ).to.be.true;
     });
 
-    it('should allow custom minifyOptions', () => {
+    it('should allow custom partial minifyOptions', () => {
       const minifyOptions = { caseSensitive: false };
       minifyHTMLLiterals(SOURCE, { fileName: 'test.js', minifyOptions });
       const parts = parseLiterals(SOURCE)[1].parts;
@@ -149,8 +149,12 @@ describe('minifyHTMLLiterals()', () => {
         parts,
         defaultStrategy.getPlaceholder(parts)
       );
-      expect(minifyHTMLSpy.lastCall.calledWithExactly(html, minifyOptions)).to
-        .be.true;
+      expect(
+        minifyHTMLSpy.lastCall.calledWithExactly(html, {
+          ...defaultMinifyOptions,
+          ...minifyOptions
+        })
+      ).to.be.true;
     });
 
     it('should use MagicString constructor', () => {
