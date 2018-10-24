@@ -59,7 +59,7 @@
     "@types/html-minifier": "^3.5.2",
     "html-minifier": "^3.5.19",
     "magic-string": "^0.25.0",
-    "parse-literals": "^1.0.3"
+    "parse-literals": "^1.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
