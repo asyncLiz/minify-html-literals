@@ -282,7 +282,10 @@ export function minifyHTMLLiterals(
       }
 
       template.parts.forEach((part, index) => {
-        ms.overwrite(part.start, part.end, minParts[index]);
+        if (part.start < part.end) {
+          // Only overwrite if the literal part has text content
+          ms.overwrite(part.start, part.end, minParts[index]);
+        }
       });
     }
   });
