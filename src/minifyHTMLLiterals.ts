@@ -21,7 +21,7 @@ export interface DefaultOptions extends BaseOptions {
    * <code>html-minifier</code> options to use. Defaults to
    * <code>defaultMinifyOptions</code>, for production-ready minification.
    */
-  minifyOptions?: typeof defaultMinifyOptions;
+  minifyOptions?: Partial<typeof defaultMinifyOptions>;
 }
 
 /**
@@ -31,7 +31,7 @@ export interface CustomOptions<S extends Strategy> extends BaseOptions {
   /**
    * HTML minification options.
    */
-  minifyOptions?: S extends Strategy<infer O> ? O : never;
+  minifyOptions?: S extends Strategy<infer O> ? Partial<O> : never;
   /**
    * Override the default strategy for how to minify HTML. The default is to
    * use <code>html-minifier</code>.
@@ -76,7 +76,7 @@ export interface BaseOptions {
   /**
    * Options for <code>parseLiterals()</code>.
    */
-  parseLiteralsOptions?: ParseLiteralsOptions;
+  parseLiteralsOptions?: Partial<ParseLiteralsOptions>;
   /**
    * Determines whether or not a template should be minified. The default is to
    * minify all tagged template whose tag name contains "html" (case
@@ -236,9 +236,10 @@ export function minifyHTMLLiterals(
   source: string,
   options: Options
 ): Result | null {
-  if (!options.minifyOptions) {
-    options.minifyOptions = defaultMinifyOptions;
-  }
+  options.minifyOptions = {
+    ...defaultMinifyOptions,
+    ...(options.minifyOptions || {})
+  };
 
   if (!options.MagicString) {
     options.MagicString = MagicString;
@@ -252,11 +253,10 @@ export function minifyHTMLLiterals(
     options.shouldMinify = defaultShouldMinify;
   }
 
-  if (!options.parseLiteralsOptions) {
-    options.parseLiteralsOptions = {
-      fileName: options.fileName
-    };
-  }
+  options.parseLiteralsOptions = {
+    ...{ fileName: options.fileName },
+    ...(options.parseLiteralsOptions || {})
+  };
 
   const templates = options.parseLiterals(source, options.parseLiteralsOptions);
   const strategy = (<CustomOptions<any>>options).strategy || defaultStrategy;
