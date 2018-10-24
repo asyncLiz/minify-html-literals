@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.0"></a>
+
+# [1.1.0](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.7...v1.1.0) (2018-10-24)
+
+### Bug Fixes
+
+- do not fail on empty template literals ([b74973a](https://github.com/asyncLiz/minify-html-literals/commit/b74973a))
+- update parse-literals to 1.1.0 ([5ba1e99](https://github.com/asyncLiz/minify-html-literals/commit/5ba1e99))
+
+### Features
+
+- allow partial minify options to make it easier to customize ([f007988](https://github.com/asyncLiz/minify-html-literals/commit/f007988))
+- do not require options or filename ([6649ac9](https://github.com/asyncLiz/minify-html-literals/commit/6649ac9))
+
 <a name="1.0.7"></a>
 
 ## [1.0.7](https://github.com/asyncLiz/minify-html-literals/compare/v1.0.6...v1.0.7) (2018-10-05)
