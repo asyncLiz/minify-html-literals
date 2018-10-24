@@ -48,7 +48,7 @@ export interface BaseOptions {
    * code and for source map filenames. It may be a base name, relative, or
    * absolute path.
    */
-  fileName: string;
+  fileName?: string;
   /**
    * Override how source maps are generated. Set to false to disable source map
    * generation.
@@ -219,7 +219,7 @@ export const defaultValidation: Validation = {
  */
 export function minifyHTMLLiterals(
   source: string,
-  options: DefaultOptions
+  options?: DefaultOptions
 ): Result | null;
 /**
  * Minifies all HTML template literals in the provided source string.
@@ -230,11 +230,11 @@ export function minifyHTMLLiterals(
  */
 export function minifyHTMLLiterals<S extends Strategy>(
   source: string,
-  options: CustomOptions<S>
+  options?: CustomOptions<S>
 ): Result | null;
 export function minifyHTMLLiterals(
   source: string,
-  options: Options
+  options: Options = {}
 ): Result | null {
   options.minifyOptions = {
     ...defaultMinifyOptions,
@@ -295,7 +295,7 @@ export function minifyHTMLLiterals(
     if (options.generateSourceMap !== false) {
       const generateSourceMap =
         options.generateSourceMap || defaultGenerateSourceMap;
-      map = generateSourceMap(ms, options.fileName);
+      map = generateSourceMap(ms, options.fileName || '');
     }
 
     return {
