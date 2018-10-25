@@ -71,12 +71,13 @@ export const defaultMinifyOptions: Options = {
  */
 export const defaultStrategy: Strategy<Options> = {
   getPlaceholder(parts: TemplatePart[]): string {
-    let placeholder = 'TEMPLATE_EXPRESSION';
-    while (parts.some(part => part.text.includes(placeholder))) {
+    const suffix = '();';
+    let placeholder = '@TEMPLATE_EXPRESSION';
+    while (parts.some(part => part.text.includes(placeholder + suffix))) {
       placeholder += '_';
     }
 
-    return placeholder;
+    return placeholder + suffix;
   },
   combineHTMLStrings(parts: TemplatePart[], placeholder: string): string {
     return parts.map(part => part.text).join(placeholder);

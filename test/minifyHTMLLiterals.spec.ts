@@ -45,8 +45,11 @@ class MagicStringLike {
 
 describe('minifyHTMLLiterals()', () => {
   const SOURCE = `
-    function render(title, items) {
+    function render(title, items, styles) {
       return html\`
+        <style>
+          \${styles}
+        </style>
         <h1 class="heading">\${title}</h1>
         <ul>
           \${items.map(item => {
@@ -64,20 +67,22 @@ describe('minifyHTMLLiterals()', () => {
       \`;
     }
 
-    function taggednoMinify() {
+    function taggednoMinify(extra) {
       return css\`
         <style>
           .heading {
             font-size: 24px;
           }
+
+          \${extra}
         </style>
       \`;
     }
   `;
 
   const SOURCE_MIN = `
-    function render(title, items) {
-      return html\`<h1 class=heading>\${title}</h1><ul>\${items.map(item => {
+    function render(title, items, styles) {
+      return html\`<style>\${styles}</style><h1 class=heading>\${title}</h1><ul>\${items.map(item => {
             return getHTML()\`<li>\${item}</li>\`;
           })}</ul>\`;
     }
@@ -88,12 +93,14 @@ describe('minifyHTMLLiterals()', () => {
       \`;
     }
 
-    function taggednoMinify() {
+    function taggednoMinify(extra) {
       return css\`
         <style>
           .heading {
             font-size: 24px;
           }
+
+          \${extra}
         </style>
       \`;
     }

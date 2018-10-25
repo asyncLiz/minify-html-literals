@@ -19,24 +19,24 @@ describe('strategy', () => {
     ];
 
     describe('getPlaceholder()', () => {
-      it('should return "TEMPLATE_EXPRESSION"', () => {
+      it('should return "@TEMPLATE_EXPRESSION();"', () => {
         const placeholder = defaultStrategy.getPlaceholder(parts);
-        expect(placeholder).to.equal('TEMPLATE_EXPRESSION');
+        expect(placeholder).to.equal('@TEMPLATE_EXPRESSION();');
       });
 
       it('should append "_" if placeholder exists in templates', () => {
         expect(
           defaultStrategy.getPlaceholder([
-            { text: 'TEMPLATE_EXPRESSION', start: 0, end: 19 }
+            { text: '@TEMPLATE_EXPRESSION();', start: 0, end: 19 }
           ])
-        ).to.equal('TEMPLATE_EXPRESSION_');
+        ).to.equal('@TEMPLATE_EXPRESSION_();');
 
         expect(
           defaultStrategy.getPlaceholder([
-            { text: 'TEMPLATE_EXPRESSION', start: 0, end: 19 },
-            { text: 'TEMPLATE_EXPRESSION_', start: 19, end: 38 }
+            { text: '@TEMPLATE_EXPRESSION();', start: 0, end: 19 },
+            { text: '@TEMPLATE_EXPRESSION_();', start: 19, end: 38 }
           ])
-        ).to.equal('TEMPLATE_EXPRESSION__');
+        ).to.equal('@TEMPLATE_EXPRESSION__();');
       });
     });
 
@@ -52,9 +52,10 @@ describe('strategy', () => {
     describe('minifyHTML()', () => {
       it('should call minify() with html and options', () => {
         const html = `
-          <h1 class="heading">TEMPLATE_EXPRESSION</h1>
+          <style>@TEMPLATE_EXPRESSION();</style>
+          <h1 class="heading">@TEMPLATE_EXPRESSION();</h1>
           <ul>
-            <li>TEMPLATE_EXPRESSION</li>
+            <li>@TEMPLATE_EXPRESSION();</li>
           </ul>
         `;
 
