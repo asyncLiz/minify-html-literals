@@ -172,7 +172,7 @@ export interface Result {
 export function defaultGenerateSourceMap(
   ms: MagicStringLike,
   fileName: string
-): SourceMap {
+) {
   return ms.generateMap({
     file: `${fileName}.map`,
     source: fileName,
@@ -188,7 +188,7 @@ export function defaultGenerateSourceMap(
  * @param template the template to check
  * @returns true if the template should be minified
  */
-export function defaultShouldMinify(template: Template): boolean {
+export function defaultShouldMinify(template: Template) {
   return !!template.tag && template.tag.toLowerCase().includes('html');
 }
 
@@ -196,12 +196,12 @@ export function defaultShouldMinify(template: Template): boolean {
  * The default validation.
  */
 export const defaultValidation: Validation = {
-  ensurePlaceholderValid(placeholder: any) {
+  ensurePlaceholderValid(placeholder) {
     if (typeof placeholder !== 'string' || !placeholder.length) {
       throw new Error('getPlaceholder() must return a non-empty string');
     }
   },
-  ensureHTMLPartsValid(parts: TemplatePart[], htmlParts: string[]) {
+  ensureHTMLPartsValid(parts, htmlParts) {
     if (parts.length !== htmlParts.length) {
       throw new Error(
         'splitHTMLByPlaceholder() must return same number of strings as template parts'

@@ -19,24 +19,69 @@ describe('strategy', () => {
     ];
 
     describe('getPlaceholder()', () => {
-      it('should return "@TEMPLATE_EXPRESSION();"', () => {
+      it('should return a string with @ and () in it with no spaces', () => {
         const placeholder = defaultStrategy.getPlaceholder(parts);
-        expect(placeholder).to.equal('@TEMPLATE_EXPRESSION();');
+        expect(placeholder.indexOf('@')).to.equal(0, 'should start with @');
+        expect(placeholder).to.include('()', 'should contain function parens');
       });
 
       it('should append "_" if placeholder exists in templates', () => {
-        expect(
-          defaultStrategy.getPlaceholder([
-            { text: '@TEMPLATE_EXPRESSION();', start: 0, end: 19 }
-          ])
-        ).to.equal('@TEMPLATE_EXPRESSION_();');
+        const regularPlaceholder = defaultStrategy.getPlaceholder(parts);
+        const oneUnderscore = defaultStrategy.getPlaceholder([
+          { text: regularPlaceholder, start: 0, end: regularPlaceholder.length }
+        ]);
 
+        expect(oneUnderscore).not.to.equal(regularPlaceholder);
+        expect(oneUnderscore).to.include('_');
+
+        const twoUnderscores = defaultStrategy.getPlaceholder([
+          {
+            text: regularPlaceholder,
+            start: 0,
+            end: regularPlaceholder.length
+          },
+          {
+            text: oneUnderscore,
+            start: regularPlaceholder.length,
+            end: regularPlaceholder.length + oneUnderscore.length
+          }
+        ]);
+
+        expect(twoUnderscores).not.to.equal(regularPlaceholder);
+        expect(twoUnderscores).not.to.equal(oneUnderscore);
+        expect(twoUnderscores).to.include('__');
+      });
+
+      it('should return a value that is preserved by html-minifier when splitting', () => {
+        const placeholder = defaultStrategy.getPlaceholder(parts);
+        const minHtml = defaultStrategy.minifyHTML(
+          `
+          <style>
+            ${placeholder}
+
+            p {
+              ${placeholder}
+              color: ${placeholder}
+            }
+
+            div {
+              width: ${placeholder}
+            }
+          </style>
+          <p style="color: ${placeholder}">
+            ${placeholder}
+          </p>
+          <div id="${placeholder}" class="with ${placeholder}"></div>
+        `,
+          defaultMinifyOptions
+        );
+
+        console.log(minHtml);
+
+        // 8 placeholders, 9 parts
         expect(
-          defaultStrategy.getPlaceholder([
-            { text: '@TEMPLATE_EXPRESSION();', start: 0, end: 19 },
-            { text: '@TEMPLATE_EXPRESSION_();', start: 19, end: 38 }
-          ])
-        ).to.equal('@TEMPLATE_EXPRESSION__();');
+          defaultStrategy.splitHTMLByPlaceholder(minHtml, placeholder)
+        ).to.have.lengthOf(9);
       });
     });
 
@@ -51,11 +96,12 @@ describe('strategy', () => {
 
     describe('minifyHTML()', () => {
       it('should call minify() with html and options', () => {
+        const placeholder = defaultStrategy.getPlaceholder(parts);
         const html = `
-          <style>@TEMPLATE_EXPRESSION();</style>
-          <h1 class="heading">@TEMPLATE_EXPRESSION();</h1>
+          <style>${placeholder}</style>
+          <h1 class="heading">${placeholder}</h1>
           <ul>
-            <li>@TEMPLATE_EXPRESSION();</li>
+            <li>${placeholder}</li>
           </ul>
         `;
 
