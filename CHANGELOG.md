@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0"></a>
+
+# [1.2.0](https://github.com/asyncLiz/minify-html-literals/compare/v1.1.2...v1.2.0) (2019-02-13)
+
+### Features
+
+- add ability to minify css-tagged templates ([d37a037](https://github.com/asyncLiz/minify-html-literals/commit/d37a037)), closes [#3](https://github.com/asyncLiz/minify-html-literals/issues/3)
+
 <a name="1.1.2"></a>
 
 ## [1.1.2](https://github.com/asyncLiz/minify-html-literals/compare/v1.1.1...v1.1.2) (2018-11-29)
