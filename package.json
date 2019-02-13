@@ -57,12 +57,14 @@
   },
   "dependencies": {
     "@types/html-minifier": "^3.5.2",
+    "clean-css": "^4.2.1",
     "html-minifier": "^3.5.21",
     "magic-string": "^0.25.0",
     "parse-literals": "^1.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/clean-css": "^4.2.0",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.5.2",
     "@types/sinon": "^5.0.1",

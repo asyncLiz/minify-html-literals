@@ -72,11 +72,13 @@ Be sure to minify template literals _before_ transpiling to ES5. Otherwise, the 
 
 The following options are common to typical use cases.
 
-| Property         | Type                                                                                         | Default                | Description                                                                                                                                                         |
-| ---------------- | -------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fileName`       | string                                                                                       |                        | _Required._ The name of the file, used for syntax parsing and source maps.                                                                                          |
-| `minifyOptions?` | [html-minifier options](https://www.npmjs.com/package/html-minifier#options-quick-reference) | `defaultMinifyOptions` | Defaults to production-ready minification.                                                                                                                          |
-| `shouldMinify?`  | function                                                                                     | `defaultShouldMinify`  | A function that determines whether or not a template should be minified. Defaults to minify all tagged templates whose tag name contains "html" (case insensitive). |
+| Property                    | Type                                                                                         | Default                   | Description                                                                                                                                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fileName`                  | string                                                                                       |                           | _Required._ The name of the file, used for syntax parsing and source maps.                                                                                                |
+| `minifyOptions?`            | [html-minifier options](https://www.npmjs.com/package/html-minifier#options-quick-reference) | `defaultMinifyOptions`    | Defaults to production-ready minification.                                                                                                                                |
+| `minifyOptions?.minifyCSS?` | [clean-css options](https://www.npmjs.com/package/clean-css#constructor-options)             | `defaultMinifyCSSOptions` | Uses clean-css defaults.                                                                                                                                                  |
+| `shouldMinify?`             | function                                                                                     | `defaultShouldMinify`     | A function that determines whether or not an HTML template should be minified. Defaults to minify all tagged templates whose tag name contains "html" (case insensitive). |
+| `shouldMinifyCSS?`          | function                                                                                     | `defaultShouldMinifyCSS`  | A function that determines whether or not a CSS template should be minified. Defaults to minify all tagged templates whose tag name contains "css" (case insensitive).    |
 
 ### Advanced
 
@@ -93,6 +95,39 @@ All aspects of the API are exposed and customizable. The following options will 
 
 ## Customization Examples
 
+### Minify non-tagged templates
+
+> This is particularly useful for libraries that define templates without using tags, such as Polymer's `<dom-module>`.
+
+```js
+import { minifyHTMLLiterals, defaultShouldMinify } from 'minify-html-literals';
+
+minifyHTMLLiterals(
+  `
+    template.innerHTML = \`
+      <dom-module id="custom-styles">
+        <style>
+          html {
+            --custom-color: blue;
+          }
+        </style>
+      </dom-module>
+    \`;
+  `,
+  {
+    fileName: 'render.js',
+    shouldMinify(template) {
+      return (
+        defaultShouldMinify(template) ||
+        template.parts.some(part => {
+          return part.text.includes('<dom-module>');
+        })
+      );
+    }
+  }
+);
+```
+
 ### Do not minify CSS
 
 ```js
@@ -103,36 +138,9 @@ minifyHTMLLiterals(source, {
   minifyOptions: {
     ...defaultMinifyOptions,
     minifyCSS: false
-  }
+  },
+  shouldMinifyCSS: () => false
 });
-```
-
-### Minify non-tagged templates
-
-```js
-import { minifyHTMLLiterals, defaultShouldMinify } from 'minify-html-literals';
-
-minifyHTMLLiterals(
-  `function render() {
-    return html\`
-      <h1>This tagged template is minified</h1>
-      \${\`
-        <div>and so is this non-tagged template</div>
-      \`}
-    \`;
-  }`,
-  {
-    fileName: 'render.js',
-    shouldMinify(template) {
-      return (
-        defaultShouldMinify(template) ||
-        template.parts.some(part => {
-          return part.text.includes('<div>');
-        })
-      );
-    }
-  }
-);
 ```
 
 ### Modify generated SourceMap

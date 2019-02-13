@@ -11,6 +11,7 @@ import {
   SourceMap,
   defaultGenerateSourceMap,
   defaultShouldMinify,
+  defaultShouldMinifyCSS,
   defaultValidation,
   minifyHTMLLiterals
 } from '../src/minifyHTMLLiterals';
@@ -68,7 +69,7 @@ describe('minifyHTMLLiterals()', () => {
     }
 
     function taggednoMinify(extra) {
-      return css\`
+      return other\`
         <style>
           .heading {
             font-size: 24px;
@@ -76,6 +77,16 @@ describe('minifyHTMLLiterals()', () => {
 
           \${extra}
         </style>
+      \`;
+    }
+
+    function taggedCSSMinify(extra) {
+      return css\`
+        .heading {
+          font-size: 24px;
+        }
+
+        \${extra}
       \`;
     }
   `;
@@ -94,7 +105,7 @@ describe('minifyHTMLLiterals()', () => {
     }
 
     function taggednoMinify(extra) {
-      return css\`
+      return other\`
         <style>
           .heading {
             font-size: 24px;
@@ -104,9 +115,13 @@ describe('minifyHTMLLiterals()', () => {
         </style>
       \`;
     }
+
+    function taggedCSSMinify(extra) {
+      return css\`.heading{font-size:24px}\${extra}\`;
+    }
   `;
 
-  it('should minify "html" tagged templates only', () => {
+  it('should minify "html" and "css" tagged templates only', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SOURCE_MIN);
@@ -364,6 +379,22 @@ describe('minifyHTMLLiterals()', () => {
     it('should return false if the template is not tagged or does not contain "html"', () => {
       expect(defaultShouldMinify({ parts: [] })).to.be.false;
       expect(defaultShouldMinify({ tag: 'css', parts: [] })).to.be.false;
+    });
+  });
+
+  describe('defaultShouldMinifyCSS()', () => {
+    it('should return true if the template is tagged with any "css" text', () => {
+      expect(defaultShouldMinifyCSS({ tag: 'css', parts: [] })).to.be.true;
+      expect(defaultShouldMinifyCSS({ tag: 'CSS', parts: [] })).to.be.true;
+      expect(defaultShouldMinifyCSS({ tag: 'csS', parts: [] })).to.be.true;
+      expect(defaultShouldMinifyCSS({ tag: 'getCSS()', parts: [] })).to.be.true;
+      expect(defaultShouldMinifyCSS({ tag: 'templateCss()', parts: [] })).to.be
+        .true;
+    });
+
+    it('should return false if the template is not tagged or does not contain "css"', () => {
+      expect(defaultShouldMinifyCSS({ parts: [] })).to.be.false;
+      expect(defaultShouldMinifyCSS({ tag: 'html', parts: [] })).to.be.false;
     });
   });
 

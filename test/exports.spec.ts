@@ -3,10 +3,15 @@ import * as min from '../index';
 import {
   defaultGenerateSourceMap,
   defaultShouldMinify,
+  defaultShouldMinifyCSS,
   defaultValidation,
   minifyHTMLLiterals
 } from '../src/minifyHTMLLiterals';
-import { defaultMinifyOptions, defaultStrategy } from '../src/strategy';
+import {
+  defaultMinifyCSSOptions,
+  defaultMinifyOptions,
+  defaultStrategy
+} from '../src/strategy';
 
 describe('exports', () => {
   it('should export minifyHTMLLiterals() function and defaults', () => {
@@ -14,8 +19,10 @@ describe('exports', () => {
       minifyHTMLLiterals,
       defaultGenerateSourceMap,
       defaultShouldMinify,
+      defaultShouldMinifyCSS,
       defaultValidation,
       defaultMinifyOptions,
+      defaultMinifyCSSOptions,
       defaultStrategy
     });
   });

@@ -87,6 +87,15 @@ export interface BaseOptions {
    */
   shouldMinify?(template: Template): boolean;
   /**
+   * Determines whether or not a CSS template should be minified. The default is
+   * to minify all tagged template whose tag name contains "css" (case
+   * insensitive).
+   *
+   * @param template the template to check
+   * @returns true if the template should be minified
+   */
+  shouldMinifyCSS?(template: Template): boolean;
+  /**
    * Override custom validation or set to false to disable validation. This is
    * only useful when implementing your own strategy that may return
    * unexpected results.
@@ -193,6 +202,18 @@ export function defaultShouldMinify(template: Template) {
 }
 
 /**
+ * The default method to determine whether or not to minify a CSS template. It
+ * will return true for all tagged templates whose tag name contains "css" (case
+ * insensitive).
+ *
+ * @param template the template to check
+ * @returns true if the template should be minified
+ */
+export function defaultShouldMinifyCSS(template: Template) {
+  return !!template.tag && template.tag.toLowerCase().includes('css');
+}
+
+/**
  * The default validation.
  */
 export const defaultValidation: Validation = {
@@ -253,14 +274,19 @@ export function minifyHTMLLiterals(
     options.shouldMinify = defaultShouldMinify;
   }
 
+  if (!options.shouldMinifyCSS) {
+    options.shouldMinifyCSS = defaultShouldMinifyCSS;
+  }
+
   options.parseLiteralsOptions = {
     ...{ fileName: options.fileName },
     ...(options.parseLiteralsOptions || {})
   };
 
   const templates = options.parseLiterals(source, options.parseLiteralsOptions);
-  const strategy = (<CustomOptions<any>>options).strategy || defaultStrategy;
-  const { shouldMinify } = options;
+  const strategy =
+    <Strategy>(<CustomOptions<any>>options).strategy || defaultStrategy;
+  const { shouldMinify, shouldMinifyCSS } = options;
   let validate: Validation | undefined;
   if (options.validate !== false) {
     validate = options.validate || defaultValidation;
@@ -268,14 +294,31 @@ export function minifyHTMLLiterals(
 
   const ms = new options.MagicString(source);
   templates.forEach(template => {
-    if (shouldMinify(template)) {
+    const minifyHTML = shouldMinify(template);
+    const minifyCSS = !!strategy.minifyCSS && shouldMinifyCSS(template);
+    if (minifyHTML || minifyCSS) {
       const placeholder = strategy.getPlaceholder(template.parts);
       if (validate) {
         validate.ensurePlaceholderValid(placeholder);
       }
 
-      const html = strategy.combineHTMLStrings(template.parts, placeholder);
-      const min = strategy.minifyHTML(html, options.minifyOptions);
+      const combined = strategy.combineHTMLStrings(template.parts, placeholder);
+      let min: string;
+      if (minifyCSS) {
+        const minifyCSSOptions = (options.minifyOptions || {}).minifyCSS;
+        if (typeof minifyCSSOptions === 'function') {
+          min = minifyCSSOptions(combined);
+        } else if (minifyCSSOptions === false) {
+          min = combined;
+        } else {
+          const cssOptions =
+            typeof minifyCSSOptions === 'object' ? minifyCSSOptions : undefined;
+          min = strategy.minifyCSS!(combined, cssOptions);
+        }
+      } else {
+        min = strategy.minifyHTML(combined, options.minifyOptions);
+      }
+
       const minParts = strategy.splitHTMLByPlaceholder(min, placeholder);
       if (validate) {
         validate.ensureHTMLPartsValid(template.parts, minParts);

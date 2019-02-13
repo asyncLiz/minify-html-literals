@@ -1,10 +1,14 @@
-import { Options, minify } from 'html-minifier';
+import * as CleanCSS from 'clean-css';
+import { Options as HTMLOptions, minify } from 'html-minifier';
 import { TemplatePart } from 'parse-literals';
 
 /**
- * A strategy on how to minify HTML.
+ * A strategy on how to minify HTML and optionally CSS.
+ *
+ * @template O minify HTML options
+ * @template C minify CSS options
  */
-export interface Strategy<O = any> {
+export interface Strategy<O = any, C = any> {
   /**
    * Retrieve a placeholder for the given array of template parts. The
    * placeholder returned should be the same if the function is invoked with the
@@ -31,10 +35,18 @@ export interface Strategy<O = any> {
    * Minfies the provided HTML string.
    *
    * @param html the html to minify
-   * @param options minify options
+   * @param options html minify options
    * @returns minified HTML string
    */
   minifyHTML(html: string, options?: O): string;
+  /**
+   * Minifies the provided CSS string.
+   *
+   * @param css the css to minfiy
+   * @param options css minify options
+   * @returns minified CSS string
+   */
+  minifyCSS?(css: string, options?: C): string;
   /**
    * Splits a minfied HTML string back into an array of strings from the
    * provided placeholder. The returned array of strings should be the same
@@ -48,14 +60,20 @@ export interface Strategy<O = any> {
 }
 
 /**
+ * The default <code>clean-css</code> options, optimized for production
+ * minification.
+ */
+export const defaultMinifyCSSOptions: CleanCSS.Options = {};
+
+/**
  * The default <code>html-minifier</code> options, optimized for production
  * minification.
  */
-export const defaultMinifyOptions: Options = {
+export const defaultMinifyOptions: HTMLOptions = {
   caseSensitive: true,
   collapseWhitespace: true,
   decodeEntities: true,
-  minifyCSS: true,
+  minifyCSS: defaultMinifyCSSOptions,
   minifyJS: true,
   processConditionalComments: true,
   removeAttributeQuotes: true,
@@ -67,9 +85,10 @@ export const defaultMinifyOptions: Options = {
 };
 
 /**
- * The default strategy. This uses <code>html-minifier</code> to minify HTML.
+ * The default strategy. This uses <code>html-minifier</code> to minify HTML and
+ * <code>clean-css</code> to minify CSS.
  */
-export const defaultStrategy: Strategy<Options> = {
+export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
   getPlaceholder(parts) {
     // Using @ and (); will cause the expression not to be removed in CSS.
     // However, sometimes the semicolon can be removed (ex: inline styles).
@@ -122,6 +141,14 @@ export const defaultStrategy: Strategy<Options> = {
       ...options,
       minifyCSS: minifyCSSOptions
     });
+  },
+  minifyCSS(css, options = {}) {
+    const output = new CleanCSS(options).minify(css);
+    if (output.errors && output.errors.length) {
+      throw new Error(output.errors.join('\n\n'));
+    }
+
+    return output.styles;
   },
   splitHTMLByPlaceholder(html, placeholder) {
     // Make the last character (a semicolon) optional. See above.
