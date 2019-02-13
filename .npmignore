@@ -1,6 +1,5 @@
-/node_modules
-/coverage
-/.nyc_output
-.*
-/test
-*.json
+**/*
+!**/*.js
+!**/*.map
+!**/*.d.ts
+!**/*.md
