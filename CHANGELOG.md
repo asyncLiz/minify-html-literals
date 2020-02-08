@@ -1,6 +1,17 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.3.0](https://github.com/asyncLiz/minify-html-literals/compare/v1.2.2...v1.3.0) (2020-02-08)
+
+### Features
+
+- minify svg-tagged templates [#9](https://github.com/asyncLiz/minify-html-literals/issues/9) ([62da810](https://github.com/asyncLiz/minify-html-literals/commit/62da810894a1f2c3705783ebb1a4264cf8989ee4))
+
+### Bug Fixes
+
+- update to html-minifier v4.0.0 ([6ddfd10](https://github.com/asyncLiz/minify-html-literals/commit/6ddfd104307347b7a66739b3c4e418bb6686e94e))
+- update to parse-literals v1.2.0 ([bba4c7d](https://github.com/asyncLiz/minify-html-literals/commit/bba4c7d12b9d92635ed1d72d00d69086a45d8edb))
 
 <a name="1.2.2"></a>
 
