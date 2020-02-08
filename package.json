@@ -60,7 +60,7 @@
     "clean-css": "^4.2.1",
     "html-minifier": "^3.5.21",
     "magic-string": "^0.25.0",
-    "parse-literals": "^1.1.1"
+    "parse-literals": "^1.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
@@ -73,12 +73,12 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.2.0",
     "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
+    "nyc": "^15.0.0",
     "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
     "sinon": "^6.1.4",
     "source-map-support": "^0.5.6",
-    "standard-version": "^4.4.0",
+    "standard-version": "^7.1.0",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   }
