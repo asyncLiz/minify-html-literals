@@ -58,7 +58,7 @@
   "dependencies": {
     "@types/html-minifier": "^3.5.2",
     "clean-css": "^4.2.1",
-    "html-minifier": "^3.5.21",
+    "html-minifier": "^4.0.0",
     "magic-string": "^0.25.0",
     "parse-literals": "^1.2.0"
   },
