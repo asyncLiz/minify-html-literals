@@ -121,10 +121,33 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
-  it('should minify "html" and "css" tagged templates only', () => {
+  const SVG_SOURCE = `
+    function taggedSVGMinify() {
+      return svg\`
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M6 19h12v2H6z" />
+          <path d="M0 0h24v24H0V0z" fill="none" />
+        </svg>
+      \`;
+    }
+  `;
+
+  const SVG_SOURCE_MIN = `
+    function taggedSVGMinify() {
+      return svg\`<svg xmlns=http://www.w3.org/2000/svg height=24 viewBox="0 0 24 24" width=24><path d="M6 19h12v2H6z"/><path d="M0 0h24v24H0V0z" fill=none /></svg>\`;
+    }
+  `;
+
+  it('should minify "html" and "css" tagged templates', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SOURCE_MIN);
+  });
+
+  it('should minify "svg" tagged templates', () => {
+    const result = minifyHTMLLiterals(SVG_SOURCE, { fileName: 'test.js' });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(SVG_SOURCE_MIN);
   });
 
   it('should return null if source is already minified', () => {
@@ -379,6 +402,15 @@ describe('minifyHTMLLiterals()', () => {
     it('should return false if the template is not tagged or does not contain "html"', () => {
       expect(defaultShouldMinify({ parts: [] })).to.be.false;
       expect(defaultShouldMinify({ tag: 'css', parts: [] })).to.be.false;
+    });
+
+    it('should return true if the template is tagged with any "svg" text', () => {
+      expect(defaultShouldMinify({ tag: 'svg', parts: [] })).to.be.true;
+      expect(defaultShouldMinify({ tag: 'SVG', parts: [] })).to.be.true;
+      expect(defaultShouldMinify({ tag: 'sVg', parts: [] })).to.be.true;
+      expect(defaultShouldMinify({ tag: 'getSVG()', parts: [] })).to.be.true;
+      expect(defaultShouldMinify({ tag: 'templateSvg()', parts: [] })).to.be
+        .true;
     });
   });
 

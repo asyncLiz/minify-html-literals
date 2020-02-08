@@ -198,7 +198,8 @@ export function defaultGenerateSourceMap(
  * @returns true if the template should be minified
  */
 export function defaultShouldMinify(template: Template) {
-  return !!template.tag && template.tag.toLowerCase().includes('html');
+  const tag = template.tag && template.tag.toLowerCase();
+  return !!tag && (tag.includes('html') || tag.includes('svg'));
 }
 
 /**
