@@ -93,7 +93,7 @@ describe('minifyHTMLLiterals()', () => {
 
   const SOURCE_MIN = `
     function render(title, items, styles) {
-      return html\`<style>\${styles}</style><h1 class=heading>\${title}</h1><ul>\${items.map(item => {
+      return html\`<style>\${styles}</style><h1 class="heading">\${title}</h1><ul>\${items.map(item => {
             return getHTML()\`<li>\${item}</li>\`;
           })}</ul>\`;
     }
@@ -134,7 +134,7 @@ describe('minifyHTMLLiterals()', () => {
 
   const SVG_SOURCE_MIN = `
     function taggedSVGMinify() {
-      return svg\`<svg xmlns=http://www.w3.org/2000/svg height=24 viewBox="0 0 24 24" width=24><path d="M6 19h12v2H6z"/><path d="M0 0h24v24H0V0z" fill=none /></svg>\`;
+      return svg\`<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M6 19h12v2H6z"/><path d="M0 0h24v24H0V0z" fill="none"/></svg>\`;
     }
   `;
 

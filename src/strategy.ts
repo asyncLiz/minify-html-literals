@@ -76,7 +76,7 @@ export const defaultMinifyOptions: HTMLOptions = {
   minifyCSS: defaultMinifyCSSOptions,
   minifyJS: true,
   processConditionalComments: true,
-  removeAttributeQuotes: true,
+  removeAttributeQuotes: false,
   removeComments: true,
   removeEmptyAttributes: true,
   removeScriptTypeAttributes: true,
