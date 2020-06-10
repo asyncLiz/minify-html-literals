@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.0...v1.3.1) (2020-06-10)
+
+
+### Bug Fixes
+
+* don't remove attribute quotes by default. Fixes [#12](https://github.com/asyncLiz/minify-html-literals/issues/12). ([#13](https://github.com/asyncLiz/minify-html-literals/issues/13)) ([e18ae65](https://github.com/asyncLiz/minify-html-literals/commit/e18ae65e202802cb2fd793089f76de3af54fec6f))
+
 ## [1.3.0](https://github.com/asyncLiz/minify-html-literals/compare/v1.2.2...v1.3.0) (2020-02-08)
 
 ### Features
