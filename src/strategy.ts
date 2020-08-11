@@ -151,8 +151,21 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
     return output.styles;
   },
   splitHTMLByPlaceholder(html, placeholder) {
-    // Make the last character (a semicolon) optional. See above.
-    // return html.split(new RegExp(`${placeholder}?`, 'g'));
-    return html.split(placeholder);
+    // We need to split carefully as minification also removes the semicolon in some cases
+
+    // Suffix explanation:
+    //     (?!   )     negative look-ahead: assert that the contained pattern doesn't match
+    //     (?!\\w)     assert that the next character is not a letter or digit
+    //    ;(?!\\w)     match semicolon only if followed by a non word character
+    // (?:        )    non-capturing group: we don't want to grap parts of the placeholder
+    // (?:;(?!\\w))?   make the whole pattern optional
+    const suffix = '(?:;(?!\\w))?';
+
+    // escape parenthesis and remove the semicolon from the placeholder
+    const escaped = placeholder
+      .replace('(', '\\(')
+      .replace(')', '\\)')
+      .replace(';', '');
+    return html.split(new RegExp(escaped + suffix, 'g'));
   }
 };

@@ -163,6 +163,54 @@ describe('minifyHTMLLiterals()', () => {
     expect(result!.map!.mappings).to.be.a('string');
   });
 
+  // test for github issue #18
+  const CSS_BLOCK_SOURCE = `
+    const textColor = 'hotpink';
+    const styles = css\`
+      body {
+        /* it is valid to remove the semicolon here if it's the last element of a block */
+        color: \${textColor};
+      }
+    \`;
+  `;
+
+  const CSS_BLOCK_SOURCE_MIN = `
+    const textColor = 'hotpink';
+    const styles = css\`body{color:\${textColor}}\`;
+  `;
+
+  it('should handle css blocks ending with template parts correctly', () => {
+    const result = minifyHTMLLiterals(CSS_BLOCK_SOURCE, {
+      fileName: 'test.js'
+    });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(CSS_BLOCK_SOURCE_MIN);
+  });
+
+  // test for github issue #20
+  const CSS_DROPPED_SEMICOLON_SOURCE = `
+    const fontSize = '12px';
+    const styles = css\`
+      body {
+        font-size: \${fontSize};
+        font-color: #000;
+      }
+    \`;
+  `;
+
+  const CSS_DROPPED_SEMICOLON_SOURCE_MIN = `
+    const fontSize = '12px';
+    const styles = css\`body{font-size:\${fontSize};font-color:#000}\`;
+  `;
+
+  it("shouldn't remove required semicolons", () => {
+    const result = minifyHTMLLiterals(CSS_DROPPED_SEMICOLON_SOURCE, {
+      fileName: 'test.js'
+    });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(CSS_DROPPED_SEMICOLON_SOURCE_MIN);
+  });
+
   describe('options', () => {
     let minifyHTMLSpy: SinonSpy;
 
