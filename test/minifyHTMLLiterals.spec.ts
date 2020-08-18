@@ -89,6 +89,17 @@ describe('minifyHTMLLiterals()', () => {
         \${extra}
       \`;
     }
+
+    function cssProperty(property) {
+      const width = '20px';
+      return css\`
+        .foo {
+          font-size: 1rem;
+          width: \${width};
+          color: \${property};
+        }
+      \`;
+    }
   `;
 
   const SOURCE_MIN = `
@@ -118,6 +129,11 @@ describe('minifyHTMLLiterals()', () => {
 
     function taggedCSSMinify(extra) {
       return css\`.heading{font-size:24px}\${extra}\`;
+    }
+
+    function cssProperty(property) {
+      const width = '20px';
+      return css\`.foo{font-size:1rem;width:\${width};color:\${property}}\`;
     }
   `;
 
