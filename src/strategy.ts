@@ -120,21 +120,8 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       minifyCSSOptions = false;
     }
 
-    if (minifyCSSOptions && typeof minifyCSSOptions.level === 'undefined') {
-      minifyCSSOptions.level = {
-        1: {
-          transform(_property: string, value: string) {
-            if (
-              value.startsWith('@TEMPLATE_EXPRESSION') &&
-              !value.endsWith(';')
-            ) {
-              // The CSS minifier has removed the semicolon from the placeholder
-              // and we need to add it back.
-              return `${value};`;
-            }
-          }
-        }
-      };
+    if (minifyCSSOptions) {
+      minifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
     }
 
     return minify(html, {
@@ -143,7 +130,7 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
     });
   },
   minifyCSS(css, options = {}) {
-    const output = new CleanCSS(options).minify(css);
+    const output = new CleanCSS(adjustMinifyCSSOptions(options)).minify(css);
     if (output.errors && output.errors.length) {
       throw new Error(output.errors.join('\n\n'));
     }
@@ -156,3 +143,56 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
     return html.split(placeholder);
   }
 };
+
+export function adjustMinifyCSSOptions(
+  options: CleanCSS.Options = {}
+): CleanCSS.Options {
+  const levelOne: CleanCSS.OptimizationsOptions['1'] = {
+    transform(_property: string, value: string) {
+      if (value.startsWith('@TEMPLATE_EXPRESSION') && !value.endsWith(';')) {
+        // The CSS minifier has removed the semicolon from the placeholder
+        // and we need to add it back.
+        return `${value};`;
+      } else {
+        return value;
+      }
+    }
+  };
+
+  const level = options.level;
+  if (typeof level === 'undefined' || level === 1) {
+    return {
+      ...options,
+      level: {
+        1: levelOne
+      }
+    };
+  } else if (level === 2) {
+    return {
+      ...options,
+      level: {
+        1: levelOne,
+        2: { all: true }
+      }
+    };
+  } else if (level === 0) {
+    return {
+      ...options,
+      level: 0
+    };
+  } else {
+    const newLevel = { ...level };
+    if (!newLevel[1]) {
+      newLevel[1] = levelOne;
+    } else {
+      newLevel[1] = {
+        ...levelOne,
+        ...newLevel[1]
+      };
+    }
+    return {
+      ...options,
+      level: newLevel
+    };
+  }
+}

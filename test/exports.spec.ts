@@ -8,6 +8,7 @@ import {
   minifyHTMLLiterals
 } from '../src/minifyHTMLLiterals';
 import {
+  adjustMinifyCSSOptions,
   defaultMinifyCSSOptions,
   defaultMinifyOptions,
   defaultStrategy
@@ -23,7 +24,8 @@ describe('exports', () => {
       defaultValidation,
       defaultMinifyOptions,
       defaultMinifyCSSOptions,
-      defaultStrategy
+      defaultStrategy,
+      adjustMinifyCSSOptions
     });
   });
 });
