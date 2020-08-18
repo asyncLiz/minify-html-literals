@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.1...v1.3.2) (2020-08-18)
+
+
+### Bug Fixes
+
+* css tagged templates not respecting semicolons ([#22](https://github.com/asyncLiz/minify-html-literals/issues/22)) ([3651a0b](https://github.com/asyncLiz/minify-html-literals/commit/3651a0bc30167deccdfb21b4177827072df16cb5))
+
 ### [1.3.1](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.0...v1.3.1) (2020-06-10)
 
 
