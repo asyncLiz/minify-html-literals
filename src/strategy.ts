@@ -124,10 +124,15 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       minifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
     }
 
-    return minify(html, {
+    let str = minify(html, {
       ...options,
       minifyCSS: minifyCSSOptions
     });
+    // Remove any left-over line-breaks including indentation (leaving one space just to be sure)
+    // Example: Minify breaking attribute values such as very long SVG paths
+    // Inspired by: https://github.com/angular/material2/blob/master/tools/package-tools/inline-resources.ts#L55
+    str = str.replace(/[\n\r]\s*/gm, ' ');
+    return str;
   },
   minifyCSS(css, options = {}) {
     const output = new CleanCSS(adjustMinifyCSSOptions(options)).minify(css);
