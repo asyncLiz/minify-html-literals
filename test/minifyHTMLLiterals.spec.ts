@@ -142,6 +142,8 @@ describe('minifyHTMLLiterals()', () => {
       return svg\`
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M6 19h12v2H6z" />
+          <path d="M150 0 L75 200
+                   L225 200 Z" />
           <path d="M0 0h24v24H0V0z" fill="none" />
         </svg>
       \`;
@@ -150,7 +152,7 @@ describe('minifyHTMLLiterals()', () => {
 
   const SVG_SOURCE_MIN = `
     function taggedSVGMinify() {
-      return svg\`<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M6 19h12v2H6z"/><path d="M0 0h24v24H0V0z" fill="none"/></svg>\`;
+      return svg\`<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M6 19h12v2H6z"/><path d="M150 0 L75 200 L225 200 Z"/><path d="M0 0h24v24H0V0z" fill="none"/></svg>\`;
     }
   `;
 
