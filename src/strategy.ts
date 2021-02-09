@@ -84,6 +84,10 @@ export const defaultMinifyOptions: HTMLOptions = {
   useShortDoctype: true
 };
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
  * The default strategy. This uses <code>html-minifier</code> to minify HTML and
  * <code>clean-css</code> to minify CSS.
@@ -139,8 +143,8 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
   },
   splitHTMLByPlaceholder(html, placeholder) {
     // Make the last character (a semicolon) optional. See above.
-    // return html.split(new RegExp(`${placeholder}?`, 'g'));
-    return html.split(placeholder);
+    return html.split(new RegExp(`${escapeRegExp(placeholder)}?`, 'g'));
+    // return html.split(placeholder);
   }
 };
 
