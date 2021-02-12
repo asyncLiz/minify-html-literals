@@ -138,9 +138,16 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
     return output.styles;
   },
   splitHTMLByPlaceholder(html, placeholder) {
+    const parts = html.split(placeholder);
     // Make the last character (a semicolon) optional. See above.
-    // return html.split(new RegExp(`${placeholder}?`, 'g'));
-    return html.split(placeholder);
+    if (placeholder.endsWith(';')) {
+      const withoutSemicolon = placeholder.substring(0, placeholder.length - 1);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        parts.splice(i, 1, ...parts[i].split(withoutSemicolon));
+      }
+    }
+
+    return parts;
   }
 };
 

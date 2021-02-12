@@ -118,6 +118,14 @@ describe('strategy', () => {
           defaultStrategy.splitHTMLByPlaceholder('<h1>EXP</h1>', 'EXP')
         ).to.deep.equal(expected);
       });
+
+      it('should handle if a placeholder is missing its semicolon', () => {
+        const expected = ['<h1>', '</h1><button onclick="', '"></button>'];
+        const html = `<h1>EXP;</h1><button onclick="EXP"></button>`;
+        expect(
+          defaultStrategy.splitHTMLByPlaceholder(html, 'EXP;')
+        ).to.deep.equal(expected);
+      });
     });
   });
 });

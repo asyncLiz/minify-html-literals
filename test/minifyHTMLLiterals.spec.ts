@@ -52,6 +52,7 @@ describe('minifyHTMLLiterals()', () => {
           \${styles}
         </style>
         <h1 class="heading">\${title}</h1>
+        <button onclick="\${() => eventHandler()}"></button>
         <ul>
           \${items.map(item => {
             return getHTML()\`
@@ -104,7 +105,7 @@ describe('minifyHTMLLiterals()', () => {
 
   const SOURCE_MIN = `
     function render(title, items, styles) {
-      return html\`<style>\${styles}</style><h1 class="heading">\${title}</h1><ul>\${items.map(item => {
+      return html\`<style>\${styles}</style><h1 class="heading">\${title}</h1><button onclick="\${() => eventHandler()}"></button><ul>\${items.map(item => {
             return getHTML()\`<li>\${item}</li>\`;
           })}</ul>\`;
     }
