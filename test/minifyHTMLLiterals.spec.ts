@@ -155,6 +155,21 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
+  const COMMENT_SOURCE = `
+    function minifyWithComment() {
+      return html\`
+        <div .icon=\${0/*JS Comment */}>
+        </div>
+      \`;
+    }
+  `;
+
+  const COMMENT_SOURCE_MIN = `
+    function minifyWithComment() {
+      return html\`<div .icon="\${0/*JS Comment */}"></div>\`;
+    }
+  `;
+
   it('should minify "html" and "css" tagged templates', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
@@ -165,6 +180,12 @@ describe('minifyHTMLLiterals()', () => {
     const result = minifyHTMLLiterals(SVG_SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SVG_SOURCE_MIN);
+  });
+
+  it('should minify html with attribute placeholders that have no quotes and JS comments', () => {
+    const result = minifyHTMLLiterals(COMMENT_SOURCE, { fileName: 'test.js' });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(COMMENT_SOURCE_MIN);
   });
 
   it('should return null if source is already minified', () => {
