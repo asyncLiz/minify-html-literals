@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.5](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.4...v1.3.5) (2021-03-09)
+
+
+### Bug Fixes
+
+* typing build error ([9571152](https://github.com/asyncLiz/minify-html-literals/commit/9571152724e542d329aea6e79bf609a67e20bec6))
+
 ### [1.3.4](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.3...v1.3.4) (2021-03-09)
 
 
