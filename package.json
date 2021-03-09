@@ -20,7 +20,7 @@
     "url": "https://github.com/asyncLiz/minify-html-literals.git"
   },
   "scripts": {
-    "clean": "rimraf \"src/**/*.{js*,d.ts}\" && rimraf \"index.{js*,d.ts}\" && rimraf \"{.nyc_output/,coverage/}\"",
+    "clean": "tsc --build --clean && rimraf \"{.nyc_output/,coverage/}\"",
     "prebuild": "npm run clean",
     "build": "tsc",
     "pretest": "npm run clean",

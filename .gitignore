@@ -4,3 +4,4 @@
 **/*.js
 **/*.map
 **/*.d.ts
+!src/types/**/*.d.ts

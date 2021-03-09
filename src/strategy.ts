@@ -1,4 +1,8 @@
 import * as CleanCSS from 'clean-css';
+import {
+  OptimizationLevel,
+  optimizationLevelFrom
+} from 'clean-css/lib/options/optimization-level';
 import { Options as HTMLOptions, minify } from 'html-minifier';
 import { TemplatePart } from 'parse-literals';
 
@@ -106,7 +110,7 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
     return parts.map(part => part.text).join(placeholder);
   },
   minifyHTML(html, options = {}) {
-    let minifyCSSOptions: any;
+    let minifyCSSOptions: HTMLOptions['minifyCSS'];
     if (options.minifyCSS) {
       if (
         options.minifyCSS !== true &&
@@ -120,13 +124,16 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       minifyCSSOptions = false;
     }
 
+    let adjustedMinifyCSSOptions:
+      | false
+      | ReturnType<typeof adjustMinifyCSSOptions> = false;
     if (minifyCSSOptions) {
-      minifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
+      adjustedMinifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
     }
 
     let result = minify(html, {
       ...options,
-      minifyCSS: minifyCSSOptions
+      minifyCSS: adjustedMinifyCSSOptions
     });
 
     if (options.collapseWhitespace) {
@@ -150,12 +157,25 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       }
     }
 
+    if (
+      adjustedMinifyCSSOptions &&
+      adjustedMinifyCSSOptions.level[OptimizationLevel.One].tidySelectors
+    ) {
+      // Fix https://github.com/jakubpawlowicz/clean-css/issues/996
+      result = fixCleanCssTidySelectors(html, result);
+    }
+
     return result;
   },
   minifyCSS(css, options = {}) {
-    const output = new CleanCSS(adjustMinifyCSSOptions(options)).minify(css);
+    const adjustedOptions = adjustMinifyCSSOptions(options);
+    const output = new CleanCSS(adjustedOptions).minify(css);
     if (output.errors && output.errors.length) {
       throw new Error(output.errors.join('\n\n'));
+    }
+
+    if (adjustedOptions.level[OptimizationLevel.One].tidySelectors) {
+      output.styles = fixCleanCssTidySelectors(css, output.styles);
     }
 
     return output.styles;
@@ -174,55 +194,55 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
   }
 };
 
-export function adjustMinifyCSSOptions(
-  options: CleanCSS.Options = {}
-): CleanCSS.Options {
-  const levelOne: CleanCSS.OptimizationsOptions['1'] = {
-    transform(_property: string, value: string) {
-      if (value.startsWith('@TEMPLATE_EXPRESSION') && !value.endsWith(';')) {
-        // The CSS minifier has removed the semicolon from the placeholder
-        // and we need to add it back.
-        return `${value};`;
-      } else {
-        return value;
-      }
+export function adjustMinifyCSSOptions(options: CleanCSS.Options = {}) {
+  const level = optimizationLevelFrom(options.level);
+  const originalTransform =
+    typeof options.level === 'object' &&
+    options.level[1] &&
+    options.level[1].transform;
+  level[OptimizationLevel.One].transform = (property, value) => {
+    if (value.startsWith('@TEMPLATE_EXPRESSION') && !value.endsWith(';')) {
+      // The CSS minifier has removed the semicolon from the placeholder
+      // and we need to add it back.
+      return (value = `${value};`);
     }
+
+    return originalTransform ? originalTransform(property, value) : value;
   };
 
-  const level = options.level;
-  if (typeof level === 'undefined' || level === 1) {
-    return {
-      ...options,
-      level: {
-        1: levelOne
-      }
-    };
-  } else if (level === 2) {
-    return {
-      ...options,
-      level: {
-        1: levelOne,
-        2: { all: true }
-      }
-    };
-  } else if (level === 0) {
-    return {
-      ...options,
-      level: 0
-    };
-  } else {
-    const newLevel = { ...level };
-    if (!newLevel[1]) {
-      newLevel[1] = levelOne;
-    } else {
-      newLevel[1] = {
-        ...levelOne,
-        ...newLevel[1]
-      };
+  return {
+    ...options,
+    level
+  };
+}
+
+function fixCleanCssTidySelectors(original: string, result: string) {
+  const regex = /(::?.+\((.*)\))[\s\r\n]*{/gm;
+  let match: RegExpMatchArray | null;
+  while ((match = regex.exec(original)) != null) {
+    const pseudoClass = match[1];
+    const parameters = match[2];
+    if (!parameters.match(/\s/)) {
+      continue;
     }
-    return {
-      ...options,
-      level: newLevel
-    };
+
+    const parametersWithoutSpaces = parameters.replace(/\s/g, '');
+    const resultPseudoClass = pseudoClass.replace(
+      parameters,
+      parametersWithoutSpaces
+    );
+    const resultStartIndex = result.indexOf(resultPseudoClass);
+    if (resultStartIndex < 0) {
+      continue;
+    }
+
+    const resultEndIndex = resultStartIndex + resultPseudoClass.length;
+    // Restore the original pseudo class with spaces
+    result =
+      result.substring(0, resultStartIndex) +
+      pseudoClass +
+      result.substring(resultEndIndex);
   }
+
+  return result;
 }

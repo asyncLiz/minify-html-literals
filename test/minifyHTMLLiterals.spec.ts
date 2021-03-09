@@ -198,6 +198,22 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
+  const SHADOW_PARTS_SOURCE = `
+    function parts() {
+      return css\`
+        foo-bar::part(space separated) {
+          color: red;
+        }
+      \`;
+    }
+  `;
+
+  const SHADOW_PARTS_SOURCE_MIN = `
+    function parts() {
+      return css\`foo-bar::part(space separated){color:red}\`;
+    }
+  `;
+
   it('should minify "html" and "css" tagged templates', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
@@ -222,6 +238,14 @@ describe('minifyHTMLLiterals()', () => {
     });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SVG_MULTILINE_SOURCE_MIN);
+  });
+
+  it('should not remove spaces in ::part()', () => {
+    const result = minifyHTMLLiterals(SHADOW_PARTS_SOURCE, {
+      fileName: 'test.js'
+    });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(SHADOW_PARTS_SOURCE_MIN);
   });
 
   it('should return null if source is already minified', () => {

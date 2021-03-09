@@ -7,7 +7,8 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["index.ts", "src/**/*.ts"]
 }
