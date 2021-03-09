@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.3](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.2...v1.3.3) (2021-03-09)
+
+
+### Bug Fixes
+
+* html attribute placeholders throwing split error [#28](https://github.com/asyncLiz/minify-html-literals/issues/28) ([b1e14dc](https://github.com/asyncLiz/minify-html-literals/commit/b1e14dca1a5ed9e6599193f474992729953f885d))
+* minify multiline svg elements ([9f37d2d](https://github.com/asyncLiz/minify-html-literals/commit/9f37d2d6442a6533a90c1728f80aeb78d6060d9b))
+* parse errors with JS comments in HTML attributes with no quotes ([0f5a842](https://github.com/asyncLiz/minify-html-literals/commit/0f5a842c54f3514c72c79eaf6749f15770818550))
+* spaces in pseudo classes (like ::part) are not removed ([85526fc](https://github.com/asyncLiz/minify-html-literals/commit/85526fcb889e288e1adbb5c7ff9feca41d45acff)), closes [#26](https://github.com/asyncLiz/minify-html-literals/issues/26)
+
 ### [1.3.2](https://github.com/asyncLiz/minify-html-literals/compare/v1.3.1...v1.3.2) (2020-08-18)
 
 
