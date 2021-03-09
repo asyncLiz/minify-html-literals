@@ -124,10 +124,33 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       minifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
     }
 
-    return minify(html, {
+    let result = minify(html, {
       ...options,
       minifyCSS: minifyCSSOptions
     });
+
+    if (options.collapseWhitespace) {
+      // html-minifier does not support removing newlines inside <svg>
+      // attributes. Support this, but be careful not to remove newlines from
+      // supported areas (such as within <pre> and <textarea> tags).
+      const matches = Array.from(result.matchAll(/<svg/g)).reverse();
+      for (const match of matches) {
+        const startTagIndex = match.index!;
+        const closeTagIndex = result.indexOf('</svg', startTagIndex);
+        if (closeTagIndex < 0) {
+          // Malformed SVG without a closing tag
+          continue;
+        }
+
+        const start = result.substring(0, startTagIndex);
+        let svg = result.substring(startTagIndex, closeTagIndex);
+        const end = result.substring(closeTagIndex);
+        svg = svg.replace(/\r?\n/g, '');
+        result = start + svg + end;
+      }
+    }
+
+    return result;
   },
   minifyCSS(css, options = {}) {
     const output = new CleanCSS(adjustMinifyCSSOptions(options)).minify(css);

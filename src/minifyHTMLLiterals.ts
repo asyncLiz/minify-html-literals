@@ -306,7 +306,9 @@ export function minifyHTMLLiterals(
       const combined = strategy.combineHTMLStrings(template.parts, placeholder);
       let min: string;
       if (minifyCSS) {
-        const minifyCSSOptions = (options.minifyOptions || {}).minifyCSS;
+        const minifyCSSOptions = (
+          (options as DefaultOptions).minifyOptions || {}
+        ).minifyCSS;
         if (typeof minifyCSSOptions === 'function') {
           min = minifyCSSOptions(combined);
         } else if (minifyCSSOptions === false) {

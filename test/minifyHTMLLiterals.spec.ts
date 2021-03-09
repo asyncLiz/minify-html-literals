@@ -170,6 +170,34 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
+  const SVG_MULTILINE_SOURCE = `
+    function multiline() {
+      return html\`
+        <pre>
+          Keep newlines
+
+          within certain tags
+        </pre>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M6 19h12v2H6z" />
+          <path d="M0
+                   0h24v24H0V0z"
+                fill="none" />
+        </svg>
+      \`;
+    }
+  `;
+
+  const SVG_MULTILINE_SOURCE_MIN = `
+    function multiline() {
+      return html\`<pre>
+          Keep newlines
+
+          within certain tags
+        </pre><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M6 19h12v2H6z"/><path d="M0                   0h24v24H0V0z" fill="none"/></svg>\`;
+    }
+  `;
+
   it('should minify "html" and "css" tagged templates', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
@@ -186,6 +214,14 @@ describe('minifyHTMLLiterals()', () => {
     const result = minifyHTMLLiterals(COMMENT_SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(COMMENT_SOURCE_MIN);
+  });
+
+  it('should minify multiline svg elements', () => {
+    const result = minifyHTMLLiterals(SVG_MULTILINE_SOURCE, {
+      fileName: 'test.js'
+    });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(SVG_MULTILINE_SOURCE_MIN);
   });
 
   it('should return null if source is already minified', () => {
