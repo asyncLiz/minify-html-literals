@@ -214,6 +214,21 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
+  const NESTED_TEMPLATE_SOURCE = `
+    function nested() {
+      return LitHtml.html\`<div id="container">
+        <span>Some content here</span>
+      </div>
+      \`;
+    }
+  `;
+
+  const NESTED_TEMPLATE_SOURCE_MIN = `
+    function nested() {
+      return LitHtml.html\`<div id="container"><span>Some content here</span></div>\`;
+    }
+  `;
+
   it('should minify "html" and "css" tagged templates', () => {
     const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
@@ -230,6 +245,14 @@ describe('minifyHTMLLiterals()', () => {
     const result = minifyHTMLLiterals(COMMENT_SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(COMMENT_SOURCE_MIN);
+  });
+
+  it('should minify html tagged with a member expression ending in html', () => {
+    const result = minifyHTMLLiterals(NESTED_TEMPLATE_SOURCE, {
+      fileName: 'test.js'
+    });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(NESTED_TEMPLATE_SOURCE_MIN);
   });
 
   it('should minify multiline svg elements', () => {
