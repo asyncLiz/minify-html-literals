@@ -214,7 +214,7 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
-  const NESTED_TEMPLATE_SOURCE = `
+  const MEMBER_EXPRESSION_LITERAL_SOURCE = `
     function nested() {
       return LitHtml.html\`<div id="container">
         <span>Some content here</span>
@@ -223,7 +223,7 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
-  const NESTED_TEMPLATE_SOURCE_MIN = `
+  const MEMBER_EXPRESSION_LITERAL_SOURCE_MIN = `
     function nested() {
       return LitHtml.html\`<div id="container"><span>Some content here</span></div>\`;
     }
@@ -248,11 +248,11 @@ describe('minifyHTMLLiterals()', () => {
   });
 
   it('should minify html tagged with a member expression ending in html', () => {
-    const result = minifyHTMLLiterals(NESTED_TEMPLATE_SOURCE, {
+    const result = minifyHTMLLiterals(MEMBER_EXPRESSION_LITERAL_SOURCE, {
       fileName: 'test.js'
     });
     expect(result).to.be.an('object');
-    expect(result!.code).to.equal(NESTED_TEMPLATE_SOURCE_MIN);
+    expect(result!.code).to.equal(MEMBER_EXPRESSION_LITERAL_SOURCE_MIN);
   });
 
   it('should minify multiline svg elements', () => {
