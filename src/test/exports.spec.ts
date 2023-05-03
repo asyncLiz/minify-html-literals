@@ -1,18 +1,18 @@
 import { expect } from 'chai';
-import * as min from '../index';
+import * as min from '../../index.js';
 import {
   defaultGenerateSourceMap,
   defaultShouldMinify,
   defaultShouldMinifyCSS,
   defaultValidation,
   minifyHTMLLiterals
-} from '../src/minifyHTMLLiterals';
+} from '../minifyHTMLLiterals.js';
 import {
   adjustMinifyCSSOptions,
   defaultMinifyCSSOptions,
   defaultMinifyOptions,
   defaultStrategy
-} from '../src/strategy';
+} from '../strategy.js';
 
 describe('exports', () => {
   it('should export minifyHTMLLiterals() function and defaults', () => {

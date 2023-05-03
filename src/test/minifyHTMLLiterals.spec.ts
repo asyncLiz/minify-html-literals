@@ -14,8 +14,8 @@ import {
   defaultShouldMinifyCSS,
   defaultValidation,
   minifyHTMLLiterals
-} from '../src/minifyHTMLLiterals';
-import { defaultMinifyOptions, defaultStrategy } from '../src/strategy';
+} from '../minifyHTMLLiterals.js';
+import { defaultMinifyOptions, defaultStrategy } from '../strategy.js';
 
 class MagicStringLike {
   generateMap(options?: Partial<SourceMapOptions>): SourceMap {
@@ -135,6 +135,24 @@ describe('minifyHTMLLiterals()', () => {
     function cssProperty(property) {
       const width = '20px';
       return css\`.foo{font-size:1rem;width:\${width};color:\${property}}\`;
+    }
+  `;
+
+  const STATIC_SOURCE = `
+    function render() {
+      const tagName = literal\`span\`
+      return html\`
+        <\${tagName}>
+        span content
+        </\${tagName}>
+      \`;
+    }
+  `;
+
+  const STATIC_SOURCE_MIN = `
+    function render() {
+      const tagName = literal\`span\`
+      return html\`<\${tagName}>span content</\${tagName}>\`;
     }
   `;
 
@@ -282,6 +300,12 @@ describe('minifyHTMLLiterals()', () => {
     expect(result!.map).to.be.an('object');
     expect(result!.map!.version).to.equal(3);
     expect(result!.map!.mappings).to.be.a('string');
+  });
+
+  it('fails to minify static html templates', () => {
+    const result = minifyHTMLLiterals(STATIC_SOURCE, { fileName: 'test.js' });
+    expect(result).to.be.an('object');
+    expect(result!.code).to.equal(STATIC_SOURCE_MIN);
   });
 
   describe('options', () => {
