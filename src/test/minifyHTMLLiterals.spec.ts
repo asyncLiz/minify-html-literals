@@ -144,7 +144,7 @@ describe('minifyHTMLLiterals()', () => {
       return html\`
         <\${tagName}>
         span content
-        </\${tagName}
+        </\${tagName}>
       \`;
     }
   `;
@@ -152,7 +152,7 @@ describe('minifyHTMLLiterals()', () => {
   const STATIC_SOURCE_MIN = `
     function render() {
       const tagName = literal\`span\`
-      return html\`<\${tagName}>span content</\${tagName}\`;
+      return html\`<\${tagName}>span content</\${tagName}>\`;
     }
   `;
 
@@ -302,7 +302,7 @@ describe('minifyHTMLLiterals()', () => {
     expect(result!.map!.mappings).to.be.a('string');
   });
 
-  it('should minify static html template', () => {
+  it('fails to minify static html templates', () => {
     const result = minifyHTMLLiterals(STATIC_SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(STATIC_SOURCE_MIN);
