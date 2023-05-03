@@ -20,16 +20,38 @@
     "url": "https://github.com/asyncLiz/minify-html-literals.git"
   },
   "scripts": {
-    "clean": "tsc --build --clean && rimraf \"{.nyc_output/,coverage/}\"",
-    "prebuild": "npm run clean",
-    "build": "tsc",
-    "pretest": "npm run clean",
-    "test": "nyc mocha -r ts-node/register -r source-map-support/register test/*.ts",
+    "build:ts": "wireit",
+    "test": "wireit",
     "coveralls": "cat coverage/lcov.info | coveralls",
     "lint": "prettier --write \"*.{js,ts,json,md}\" \"{src,test}/**/*\"",
     "precommit": "lint-staged",
     "release": "standard-version",
     "prepublishOnly": "npm run build"
+  },
+  "wireit": {
+    "build:ts": {
+      "command": "tsc --pretty",
+      "clean": "if-file-deleted",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.d.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "src/**/*.{js,d.ts,js.map}",
+        "!src/types/**/*.d.ts"
+      ]
+    },
+    "test": {
+      "command": "nyc mocha -r ts-node/register -r source-map-support/register src/test/*.js",
+      "dependencies": [
+        "build:ts"
+      ],
+      "output": [
+        ".nyc_output",
+        "coverage"
+      ]
+    }
   },
   "lint-staged": {
     "*.{js,ts,json,md}": [
@@ -80,6 +102,7 @@
     "source-map-support": "^0.5.6",
     "standard-version": "^9.0.0",
     "ts-node": "^7.0.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "wireit": "^0.9.5"
   }
 }

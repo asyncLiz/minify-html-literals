@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { minify } from 'html-minifier';
-import { defaultMinifyOptions, defaultStrategy } from '../src/strategy';
-import { TemplatePart } from '../node_modules/parse-literals';
+import { defaultMinifyOptions, defaultStrategy } from '../strategy';
+import { TemplatePart } from 'parse-literals';
 
 describe('strategy', () => {
   describe('default', () => {
