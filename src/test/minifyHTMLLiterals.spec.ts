@@ -247,63 +247,71 @@ describe('minifyHTMLLiterals()', () => {
     }
   `;
 
-  it('should minify "html" and "css" tagged templates', () => {
-    const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
+  it('should minify "html" and "css" tagged templates', async () => {
+    const result = await minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SOURCE_MIN);
   });
 
-  it('should minify "svg" tagged templates', () => {
-    const result = minifyHTMLLiterals(SVG_SOURCE, { fileName: 'test.js' });
+  it('should minify "svg" tagged templates', async () => {
+    const result = await minifyHTMLLiterals(SVG_SOURCE, {
+      fileName: 'test.js'
+    });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SVG_SOURCE_MIN);
   });
 
-  it('should minify html with attribute placeholders that have no quotes and JS comments', () => {
-    const result = minifyHTMLLiterals(COMMENT_SOURCE, { fileName: 'test.js' });
+  it('should minify html with attribute placeholders that have no quotes and JS comments', async () => {
+    const result = await minifyHTMLLiterals(COMMENT_SOURCE, {
+      fileName: 'test.js'
+    });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(COMMENT_SOURCE_MIN);
   });
 
-  it('should minify html tagged with a member expression ending in html', () => {
-    const result = minifyHTMLLiterals(MEMBER_EXPRESSION_LITERAL_SOURCE, {
+  it('should minify html tagged with a member expression ending in html', async () => {
+    const result = await minifyHTMLLiterals(MEMBER_EXPRESSION_LITERAL_SOURCE, {
       fileName: 'test.js'
     });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(MEMBER_EXPRESSION_LITERAL_SOURCE_MIN);
   });
 
-  it('should minify multiline svg elements', () => {
-    const result = minifyHTMLLiterals(SVG_MULTILINE_SOURCE, {
+  it('should minify multiline svg elements', async () => {
+    const result = await minifyHTMLLiterals(SVG_MULTILINE_SOURCE, {
       fileName: 'test.js'
     });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SVG_MULTILINE_SOURCE_MIN);
   });
 
-  it('should not remove spaces in ::part()', () => {
-    const result = minifyHTMLLiterals(SHADOW_PARTS_SOURCE, {
+  it('should not remove spaces in ::part()', async () => {
+    const result = await minifyHTMLLiterals(SHADOW_PARTS_SOURCE, {
       fileName: 'test.js'
     });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(SHADOW_PARTS_SOURCE_MIN);
   });
 
-  it('should return null if source is already minified', () => {
-    const result = minifyHTMLLiterals(SOURCE_MIN, { fileName: 'test.js' });
+  it('should return null if source is already minified', async () => {
+    const result = await minifyHTMLLiterals(SOURCE_MIN, {
+      fileName: 'test.js'
+    });
     expect(result).to.be.null;
   });
 
-  it('should return a v3 source map', () => {
-    const result = minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
+  it('should return a v3 source map', async () => {
+    const result = await minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
     expect(result).to.be.an('object');
     expect(result!.map).to.be.an('object');
     expect(result!.map!.version).to.equal(3);
     expect(result!.map!.mappings).to.be.a('string');
   });
 
-  it('fails to minify static html templates', () => {
-    const result = minifyHTMLLiterals(STATIC_SOURCE, { fileName: 'test.js' });
+  it('fails to minify static html templates', async () => {
+    const result = await minifyHTMLLiterals(STATIC_SOURCE, {
+      fileName: 'test.js'
+    });
     expect(result).to.be.an('object');
     expect(result!.code).to.equal(STATIC_SOURCE_MIN);
   });
@@ -319,8 +327,8 @@ describe('minifyHTMLLiterals()', () => {
       minifyHTMLSpy.restore();
     });
 
-    it('should use defaultMinifyOptions', () => {
-      minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
+    it('should use defaultMinifyOptions', async () => {
+      await minifyHTMLLiterals(SOURCE, { fileName: 'test.js' });
       const parts = parseLiterals(SOURCE)[1].parts;
       const html = defaultStrategy.combineHTMLStrings(
         parts,
@@ -331,9 +339,9 @@ describe('minifyHTMLLiterals()', () => {
       ).to.be.true;
     });
 
-    it('should allow custom partial minifyOptions', () => {
+    it('should allow custom partial minifyOptions', async () => {
       const minifyOptions = { caseSensitive: false };
-      minifyHTMLLiterals(SOURCE, { fileName: 'test.js', minifyOptions });
+      await minifyHTMLLiterals(SOURCE, { fileName: 'test.js', minifyOptions });
       const parts = parseLiterals(SOURCE)[1].parts;
       const html = defaultStrategy.combineHTMLStrings(
         parts,
@@ -347,9 +355,9 @@ describe('minifyHTMLLiterals()', () => {
       ).to.be.true;
     });
 
-    it('should use MagicString constructor', () => {
+    it('should use MagicString constructor', async () => {
       let msUsed;
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         generateSourceMap(ms) {
           msUsed = ms;
@@ -360,9 +368,9 @@ describe('minifyHTMLLiterals()', () => {
       expect(msUsed).to.be.an.instanceof(MagicString);
     });
 
-    it('should allow custom MagicStringLike constructor', () => {
+    it('should allow custom MagicStringLike constructor', async () => {
       let msUsed;
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         MagicString: MagicStringLike,
         generateSourceMap(ms) {
@@ -374,33 +382,33 @@ describe('minifyHTMLLiterals()', () => {
       expect(msUsed).to.be.an.instanceof(MagicStringLike);
     });
 
-    it('should allow custom parseLiterals()', () => {
+    it('should allow custom parseLiterals()', async () => {
       const customParseLiterals = spy(
         (source: string, options?: ParseLiteralsOptions) => {
           return parseLiterals(source, options);
         }
       );
 
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         parseLiterals: customParseLiterals
       });
       expect(customParseLiterals.called).to.be.true;
     });
 
-    it('should allow custom shouldMinify()', () => {
+    it('should allow custom shouldMinify()', async () => {
       const customShouldMinify = spy((template: Template) => {
         return defaultShouldMinify(template);
       });
 
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         shouldMinify: customShouldMinify
       });
       expect(customShouldMinify.called).to.be.true;
     });
 
-    it('should allow custom strategy', () => {
+    it('should allow custom strategy', async () => {
       const customStrategy = {
         getPlaceholder: spy((parts: TemplatePart[]) => {
           return defaultStrategy.getPlaceholder(parts);
@@ -418,7 +426,7 @@ describe('minifyHTMLLiterals()', () => {
         })
       };
 
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         strategy: customStrategy
       });
@@ -429,8 +437,8 @@ describe('minifyHTMLLiterals()', () => {
     });
 
     it('should use defaultValidation', () => {
-      expect(() => {
-        minifyHTMLLiterals(SOURCE, {
+      expect(async () => {
+        await minifyHTMLLiterals(SOURCE, {
           fileName: 'test.js',
           strategy: {
             getPlaceholder: () => {
@@ -443,8 +451,8 @@ describe('minifyHTMLLiterals()', () => {
         });
       }).to.throw;
 
-      expect(() => {
-        minifyHTMLLiterals(SOURCE, {
+      expect(async () => {
+        await minifyHTMLLiterals(SOURCE, {
           fileName: 'test.js',
           strategy: {
             getPlaceholder: defaultStrategy.getPlaceholder,
@@ -459,8 +467,8 @@ describe('minifyHTMLLiterals()', () => {
     });
 
     it('should allow disabling validation', () => {
-      expect(() => {
-        minifyHTMLLiterals(SOURCE, {
+      expect(async () => {
+        await minifyHTMLLiterals(SOURCE, {
           fileName: 'test.js',
           strategy: {
             getPlaceholder: () => {
@@ -475,7 +483,7 @@ describe('minifyHTMLLiterals()', () => {
       }).not.to.throw;
     });
 
-    it('should allow custom validation', () => {
+    it('should allow custom validation', async () => {
       const customValidation = {
         ensurePlaceholderValid: spy((placeholder: any) => {
           return defaultValidation.ensurePlaceholderValid(placeholder);
@@ -487,7 +495,7 @@ describe('minifyHTMLLiterals()', () => {
         )
       };
 
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         validate: customValidation
       });
@@ -495,8 +503,8 @@ describe('minifyHTMLLiterals()', () => {
       expect(customValidation.ensureHTMLPartsValid.called).to.be.true;
     });
 
-    it('should allow disabling generateSourceMap', () => {
-      const result = minifyHTMLLiterals(SOURCE, {
+    it('should allow disabling generateSourceMap', async () => {
+      const result = await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         generateSourceMap: false
       });
@@ -504,14 +512,14 @@ describe('minifyHTMLLiterals()', () => {
       expect(result!.map).to.be.undefined;
     });
 
-    it('should allow custom generateSourceMap()', () => {
+    it('should allow custom generateSourceMap()', async () => {
       const customGenerateSourceMap = spy(
         (ms: MagicStringLike, fileName: string) => {
           return defaultGenerateSourceMap(ms, fileName);
         }
       );
 
-      minifyHTMLLiterals(SOURCE, {
+      await minifyHTMLLiterals(SOURCE, {
         fileName: 'test.js',
         generateSourceMap: customGenerateSourceMap
       });

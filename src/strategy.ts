@@ -5,7 +5,7 @@ import {
   OptimizationLevel,
   optimizationLevelFrom
 } from 'clean-css/lib/options/optimization-level';
-import { Options as HTMLOptions, minify } from 'html-minifier';
+import { Options as HTMLOptions, minify } from 'html-minifier-terser';
 import { TemplatePart } from 'parse-literals';
 
 /**
@@ -38,13 +38,13 @@ export interface Strategy<O = any, C = any> {
    */
   combineHTMLStrings(parts: TemplatePart[], placeholder: string): string;
   /**
-   * Minfies the provided HTML string.
+   * Minifies the provided HTML string.
    *
    * @param html the html to minify
    * @param options html minify options
    * @returns minified HTML string
    */
-  minifyHTML(html: string, options?: O): string;
+  minifyHTML(html: string, options?: O): Promise<string>;
   /**
    * Minifies the provided CSS string.
    *
@@ -54,7 +54,7 @@ export interface Strategy<O = any, C = any> {
    */
   minifyCSS?(css: string, options?: C): string;
   /**
-   * Splits a minfied HTML string back into an array of strings from the
+   * Splits a minified HTML string back into an array of strings from the
    * provided placeholder. The returned array of strings should be the same
    * length as the template parts that were combined to make the HTML string.
    *
@@ -111,7 +111,7 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
   combineHTMLStrings(parts, placeholder) {
     return parts.map(part => part.text).join(placeholder);
   },
-  minifyHTML(html, options = {}) {
+  minifyHTML: async function(html, options = {}) {
     let minifyCSSOptions: HTMLOptions['minifyCSS'];
     if (options.minifyCSS) {
       if (
@@ -133,7 +133,7 @@ export const defaultStrategy: Strategy<HTMLOptions, CleanCSS.Options> = {
       adjustedMinifyCSSOptions = adjustMinifyCSSOptions(minifyCSSOptions);
     }
 
-    let result = minify(html, {
+    let result = await minify(html, {
       ...options,
       minifyCSS: adjustedMinifyCSSOptions
     });
